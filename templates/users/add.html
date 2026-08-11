@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add User | QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Add User
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h2 {
+        margin: 0 0 6px;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        max-width: 850px;
+        overflow: hidden;
+    }
+
+    .form-section {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+    }
+
+    .form-section h3 {
+        margin: 0 0 5px;
+        font-size: 16px;
+        color: #0f172a;
+    }
+
+    .form-section p {
+        margin: 0 0 22px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: white;
+        color: #0f172a;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+
+    .form-actions {
+        padding: 20px 24px;
+        background: #f8fafc;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    @media (max-width: 700px) {
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <h2>Create New User</h2>
+
+    <p>
+        Add a new user and assign their system access role.
+    </p>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('users.add') }}"
+    class="form-card"
+>
+
+    <!-- ACCOUNT INFORMATION -->
+
+    <div class="form-section">
+
+        <h3>Account Information</h3>
+
+        <p>
+            Basic information used to identify the user.
+        </p>
+
+
+        <div class="form-grid">
+
+            <div class="form-group full">
+
+                <label for="full_name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    placeholder="Enter user's full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required
+                >
+
+                <span class="help-text">
+                    Username must be unique.
+                </span>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="user@example.com"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROLE -->
+
+    <div class="form-section">
+
+        <h3>System Access</h3>
+
+        <p>
+            Select the role that determines what this user can access.
+        </p>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="role">
+                    User Role
+                </label>
+
+                <select
+                    id="role"
+                    name="role"
+                    required
+                >
+
+                    <option value="staff">
+                        Staff
+                    </option>
+
+                    <option value="accountant">
+                        Accountant
+                    </option>
+
+                    <option value="finance_manager">
+                        Finance Manager
+                    </option>
+
+                    <option value="administrator">
+                        Administrator
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PASSWORD -->
+
+    <div class="form-section">
+
+        <h3>Security</h3>
+
+        <p>
+            Create a secure password for this account.
+        </p>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    minlength="8"
+                    required
+                >
+
+                <span class="help-text">
+                    Minimum 8 characters.
+                </span>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Confirm password"
+                    minlength="8"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="form-actions">
+
+        <a
+            href="{{ url_for('users.index') }}"
+            class="btn btn-secondary"
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Create User
+        </button>
+
+    </div>
+
+</form>
+
+{% endblock %}

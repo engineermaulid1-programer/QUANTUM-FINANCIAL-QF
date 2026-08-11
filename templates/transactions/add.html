@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Transaction | QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Add Transaction
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.transaction-form-page {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.transaction-form-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 28px;
+}
+
+.transaction-form-header {
+    margin-bottom: 26px;
+}
+
+.transaction-form-header h2 {
+    margin: 0 0 7px 0;
+    color: #111827;
+}
+
+.transaction-form-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #111827;
+}
+
+.required {
+    color: #dc2626;
+}
+
+.account-warning {
+    margin-top: 7px;
+    padding: 11px 13px;
+    border-radius: 8px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #9a3412;
+    font-size: 12px;
+}
+
+.receipt-section {
+    margin-top: 26px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+
+.receipt-section h3 {
+    margin: 0 0 6px 0;
+    color: #111827;
+    font-size: 16px;
+}
+
+.receipt-section p {
+    margin: 0 0 15px 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.receipt-input {
+    background: #ffffff !important;
+}
+
+.receipt-help {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cancel-button,
+.save-button {
+    padding: 11px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.save-button {
+    border: none;
+    background: #111827;
+    color: #ffffff;
+}
+
+.save-button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 700px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+}
+
+</style>
+
+<div class="transaction-form-page">
+
+```
+<div class="transaction-form-card">
+
+    <div class="transaction-form-header">
+
+        <h2>
+            Add Transaction
+        </h2>
+
+        <p>
+            Record a new income or expense transaction.
+        </p>
+
+    </div>
+
+    <form
+        method="POST"
+        action="{{ url_for('transactions.add') }}"
+        id="transactionForm"
+        enctype="multipart/form-data"
+    >
+
+        <div class="form-grid">
+
+            <!-- TRANSACTION TYPE -->
+
+            <div class="form-group">
+
+                <label for="transaction_type">
+                    Transaction Type
+                    <span class="required">*</span>
+                </label>
+
+                <select
+                    name="transaction_type"
+                    id="transaction_type"
+                    required
+                >
+
+                    <option value="">
+                        Select transaction type
+                    </option>
+
+                    <option value="income">
+                        Income
+                    </option>
+
+                    <option value="expense">
+                        Expense
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="form-group">
+
+                <label for="amount">
+                    Amount (TZS)
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    id="amount"
+                    step="0.01"
+                    min="0.01"
+                    placeholder="Enter amount"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+                <label for="description">
+                    Description
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="description"
+                    id="description"
+                    placeholder="e.g. Office rent payment"
+                    maxlength="255"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label for="category">
+                    Category
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="category"
+                    id="category"
+                    placeholder="e.g. Rent, Marketing, Supplies"
+                    maxlength="100"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+                <label for="transaction_date">
+                    Transaction Date
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="date"
+                    name="transaction_date"
+                    id="transaction_date"
+                    value="{{ request.form.get('transaction_date', '') }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+
+            <div class="form-group full-width">
+
+                <label for="account_id">
+                    Financial Account
+                    <span class="required">*</span>
+                </label>
+
+                <select
+                    name="account_id"
+                    id="account_id"
+                    required
+                >
+
+                    <option value="">
+                        Select financial account
+                    </option>
+
+                    {% for account in accounts %}
+
+                    <option
+                        value="{{ account.id }}"
+                        {% if request.form.get('account_id') == account.id|string %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ account.name }}
+                        — Balance:
+                        TZS {{ "{:,.2f}".format(account.current_balance or 0) }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <div class="account-warning">
+
+                    Every transaction must be linked to a financial account.
+                    This is required so the system can correctly calculate
+                    account balances.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECEIPT -->
+
+        <div class="receipt-section">
+
+            <h3>
+                Receipt
+            </h3>
+
+            <p>
+                Attach the supporting receipt for this transaction.
+                The receipt will remain available for review after saving.
+            </p>
+
+            <div class="form-group">
+
+                <label for="receipt">
+                    Upload Receipt
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    name="receipt"
+                    id="receipt"
+                    class="receipt-input"
+                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                    required
+                >
+
+                <div class="receipt-help">
+                    Supported formats: JPG, JPEG, PNG, WEBP and PDF.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('transactions.index') }}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                Save Transaction
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+```
+
+</div>
+
+<script>
+
+document
+    .getElementById("transactionForm")
+    .addEventListener("submit", function(event) {
+
+        const account = document.getElementById("account_id");
+        const receipt = document.getElementById("receipt");
+
+        if (!account.value) {
+
+            event.preventDefault();
+
+            alert(
+                "Please select a financial account before saving this transaction."
+            );
+
+            account.focus();
+
+            return false;
+        }
+
+        if (!receipt.files.length) {
+
+            event.preventDefault();
+
+            alert(
+                "Please upload a receipt before saving this transaction."
+            );
+
+            receipt.focus();
+
+            return false;
+        }
+
+    });
+
+</script>
+
+{% endblock %}

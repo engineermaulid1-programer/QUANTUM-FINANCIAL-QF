@@ -1,0 +1,739 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Transaction | QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Edit Transaction
+{% endblock %}
+
+{% block content %}
+
+<style>
+.edit-transaction-page {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.edit-header {
+    margin-bottom: 24px;
+}
+
+.edit-header h2 {
+    margin: 0 0 6px 0;
+    font-size: 25px;
+    color: #111827;
+}
+
+.edit-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.edit-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.edit-card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.edit-card-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.edit-card-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.edit-form {
+    padding: 26px 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.transaction-reference {
+    margin-bottom: 24px;
+    padding: 15px 17px;
+    border-radius: 9px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.transaction-reference-label {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.transaction-reference-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.receipt-section {
+    margin-top: 28px;
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.receipt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.receipt-header h3 {
+    margin: 0 0 5px 0;
+    color: #111827;
+    font-size: 18px;
+}
+
+.receipt-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.receipt-status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.no-receipt {
+    padding: 22px;
+    text-align: center;
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #6b7280;
+}
+
+.no-receipt strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #374151;
+}
+
+.receipt-preview {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.receipt-preview-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-preview-header strong {
+    color: #111827;
+}
+
+.receipt-preview-header div {
+    margin-top: 4px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.receipt-image-container {
+    padding: 18px;
+    text-align: center;
+    background: #f3f4f6;
+}
+
+.receipt-image {
+    max-width: 100%;
+    max-height: 650px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+}
+
+.receipt-pdf {
+    width: 100%;
+    height: 650px;
+    border: none;
+    background: #ffffff;
+}
+
+.receipt-actions {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.receipt-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.view-receipt-button {
+    background: #111827;
+    color: #ffffff;
+}
+
+.replace-receipt-button {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.receipt-upload {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.receipt-upload-title {
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.receipt-upload input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.receipt-upload-help {
+    margin-top: 7px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.left-actions,
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 17px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cancel-button {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.cancel-button:hover {
+    background: #e5e7eb;
+}
+
+.save-button {
+    background: #111827;
+    color: #ffffff;
+}
+
+.save-button:hover {
+    opacity: 0.9;
+}
+
+.delete-button {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.delete-button:hover {
+    background: #fecaca;
+}
+
+.warning-box {
+    margin-top: 20px;
+    padding: 13px 15px;
+    border-radius: 8px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .left-actions,
+    .right-actions {
+        width: 100%;
+    }
+
+    .button {
+        flex: 1;
+    }
+
+    .receipt-header {
+        flex-direction: column;
+    }
+
+    .receipt-actions {
+        flex-direction: column;
+    }
+
+    .receipt-action {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="edit-transaction-page">
+
+```
+<div class="edit-header">
+    <h2>Edit Transaction</h2>
+    <p>
+        Review and update the financial transaction and its supporting receipt.
+    </p>
+</div>
+
+<div class="edit-card">
+
+    <div class="edit-card-header">
+        <h3>Transaction Details</h3>
+        <p>
+            Changes to the transaction will automatically update the related account balance.
+        </p>
+    </div>
+
+    <form
+        method="POST"
+        action="{{ url_for('transactions.edit', transaction_id=transaction.id) }}"
+        class="edit-form"
+    >
+
+        <div class="transaction-reference">
+            <div class="transaction-reference-label">
+                Transaction ID
+            </div>
+
+            <div class="transaction-reference-value">
+                #{{ transaction.id }}
+            </div>
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="transaction_type">
+                    Transaction Type
+                </label>
+
+                <select
+                    id="transaction_type"
+                    name="transaction_type"
+                    required
+                >
+                    <option
+                        value="income"
+                        {% if transaction.transaction_type == "income" %}
+                        selected
+                        {% endif %}
+                    >
+                        Income
+                    </option>
+
+                    <option
+                        value="expense"
+                        {% if transaction.transaction_type == "expense" %}
+                        selected
+                        {% endif %}
+                    >
+                        Expense
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">
+                    Amount (TZS)
+                </label>
+
+                <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    value="{{ transaction.amount }}"
+                    min="0.01"
+                    step="0.01"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="transaction_date">
+                    Transaction Date
+                </label>
+
+                <input
+                    type="date"
+                    id="transaction_date"
+                    name="transaction_date"
+                    value="{{ transaction.transaction_date.isoformat() }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="account_id">
+                    Financial Account
+                </label>
+
+                <select
+                    id="account_id"
+                    name="account_id"
+                    required
+                >
+                    {% for account in accounts %}
+                    <option
+                        value="{{ account.id }}"
+                        {% if transaction.account_id == account.id %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ account.name }}
+                        — TZS {{ "{:,.2f}".format(account.current_balance or 0) }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category">
+                    Category
+                </label>
+
+                <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    value="{{ transaction.category }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group full-width">
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    required
+                >{{ transaction.description }}</textarea>
+            </div>
+
+        </div>
+
+        <div class="warning-box">
+            <strong>Important:</strong>
+            Changing the transaction type, amount, or financial account
+            will automatically recalculate the affected account balance.
+        </div>
+
+        <div class="form-actions">
+
+            <div class="left-actions">
+                <a
+                    href="{{ url_for('transactions.index') }}"
+                    class="button cancel-button"
+                >
+                    Cancel
+                </a>
+            </div>
+
+            <div class="right-actions">
+                <button
+                    type="submit"
+                    class="button save-button"
+                >
+                    Save Changes
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="receipt-section">
+
+        <div class="receipt-header">
+
+            <div>
+                <h3>Receipt Review</h3>
+                <p>
+                    Review the receipt attached to this transaction.
+                    You can replace it if the wrong receipt was uploaded.
+                </p>
+            </div>
+
+            {% if transaction.receipt %}
+                <div class="receipt-status">
+                    Receipt Attached
+                </div>
+            {% endif %}
+
+        </div>
+
+        {% if transaction.receipt %}
+
+            <div class="receipt-preview">
+
+                <div class="receipt-preview-header">
+
+                    <strong>
+                        {{ transaction.receipt.original_filename }}
+                    </strong>
+
+                    <div>
+                        Uploaded receipt file
+                    </div>
+
+                </div>
+
+                {% if transaction.receipt.mime_type and transaction.receipt.mime_type.startswith("image/") %}
+
+                    <div class="receipt-image-container">
+
+                        <img
+                            src="{{ url_for('transactions.view_receipt', transaction_id=transaction.id) }}"
+                            alt="Transaction receipt"
+                            class="receipt-image"
+                        >
+
+                    </div>
+
+                {% elif transaction.receipt.mime_type == "application/pdf" %}
+
+                    <div class="receipt-image-container">
+
+                        <iframe
+                            src="{{ url_for('transactions.view_receipt', transaction_id=transaction.id) }}"
+                            class="receipt-pdf"
+                            title="Transaction receipt"
+                        ></iframe>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-receipt">
+                        <strong>Receipt file is attached.</strong>
+                        This file type cannot be previewed directly.
+                    </div>
+
+                {% endif %}
+
+                <div class="receipt-actions">
+
+                    <a
+                        href="{{ url_for('transactions.view_receipt', transaction_id=transaction.id) }}"
+                        target="_blank"
+                        class="receipt-action view-receipt-button"
+                    >
+                        Open Receipt
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <div class="no-receipt">
+
+                <strong>No receipt attached.</strong>
+
+                This transaction currently does not have a receipt.
+
+            </div>
+
+        {% endif %}
+
+        <div class="receipt-upload">
+
+            <div class="receipt-upload-title">
+                Replace / Upload Receipt
+            </div>
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                action="{{ url_for('transactions.upload_receipt', transaction_id=transaction.id) }}"
+            >
+
+                <input
+                    type="file"
+                    name="receipt"
+                    accept="image/jpeg,image/png,image/webp,application/pdf"
+                    required
+                >
+
+                <div class="receipt-upload-help">
+                    Accepted formats: JPG, PNG, WEBP and PDF.
+                </div>
+
+                <div style="margin-top: 12px;">
+
+                    <button
+                        type="submit"
+                        class="button save-button"
+                    >
+                        {% if transaction.receipt %}
+                            Replace Receipt
+                        {% else %}
+                            Upload Receipt
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 0 24px 24px 24px;">
+
+        <form
+            method="POST"
+            action="{{ url_for('transactions.delete', transaction_id=transaction.id) }}"
+            onsubmit="return confirm('Are you sure you want to permanently delete this transaction? This action cannot be undone.');"
+        >
+
+            <button
+                type="submit"
+                class="button delete-button"
+            >
+                Delete Transaction
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}
+

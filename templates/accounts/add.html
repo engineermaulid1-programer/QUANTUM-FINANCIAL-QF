@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Account - QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Add Account
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 760px;">
+
+    <div style="margin-bottom: 25px;">
+
+        <h2 style="margin-bottom: 6px;">
+            Add Financial Account
+        </h2>
+
+        <p style="color: #64748b;">
+            Register a cash, bank, mobile money or other financial account.
+        </p>
+
+    </div>
+
+
+    <form method="POST"
+          style="
+          background: white;
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.05);
+          ">
+
+
+        <!-- ACCOUNT NAME -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label style="font-weight: 600;">
+                Account Name
+            </label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="e.g. Main Bank Account"
+                required
+                style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                "
+            >
+
+        </div>
+
+
+        <!-- ACCOUNT TYPE -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label style="font-weight: 600;">
+                Account Type
+            </label>
+
+            <select
+                name="account_type"
+                required
+                style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                "
+            >
+
+                <option value="">
+                    Select account type
+                </option>
+
+                <option value="cash">
+                    Cash
+                </option>
+
+                <option value="bank">
+                    Bank Account
+                </option>
+
+                <option value="mobile_money">
+                    Mobile Money
+                </option>
+
+                <option value="other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ACCOUNT NUMBER -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label style="font-weight: 600;">
+                Account Number
+            </label>
+
+            <input
+                type="text"
+                name="account_number"
+                placeholder="Optional account number"
+                style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                "
+            >
+
+            <small style="color: #64748b;">
+                You may leave this blank for cash accounts.
+            </small>
+
+        </div>
+
+
+        <!-- OPENING BALANCE -->
+
+        <div style="margin-bottom: 20px;">
+
+            <label style="font-weight: 600;">
+                Opening Balance
+            </label>
+
+            <input
+                type="number"
+                name="opening_balance"
+                value="0"
+                min="0"
+                step="0.01"
+                required
+                style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                "
+            >
+
+            <small style="color: #64748b;">
+                Enter the amount currently available in this account.
+            </small>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div style="margin-bottom: 25px;">
+
+            <label style="font-weight: 600;">
+                Description
+            </label>
+
+            <textarea
+                name="description"
+                rows="4"
+                placeholder="Optional account description..."
+                style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                resize: vertical;
+                "
+            ></textarea>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div style="display: flex; gap: 12px;">
+
+            <button
+                type="submit"
+                style="
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                "
+            >
+                Create Account
+            </button>
+
+
+            <a
+                href="{{ url_for('accounts.index') }}"
+                style="
+                background: #e5e7eb;
+                color: #1f2937;
+                text-decoration: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                "
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

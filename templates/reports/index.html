@@ -1,0 +1,827 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports & Analytics | QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Reports & Analytics
+{% endblock %}
+
+{% block content %}
+
+<div class="reports-page">
+
+    <!-- PAGE HEADER -->
+    <div class="dashboard-panel reports-header">
+
+        <div>
+            <h2>Financial Reports & Analytics</h2>
+
+            <p>
+                Analyze financial activity by year and month.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- REPORT FILTER -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+                <h3>Report Period</h3>
+
+                <span>
+                    Select or enter the period you want to analyze.
+                </span>
+            </div>
+
+        </div>
+
+
+        <form method="GET" action="{{ url_for('reports.index') }}">
+
+            <div class="filter-grid">
+
+                <!-- SELECT YEAR -->
+                <div class="filter-field">
+
+                    <label for="year">
+                        Select Year
+                    </label>
+
+                    <select
+                        id="year"
+                        name="year"
+                    >
+
+                        <option value="">
+                            All Years
+                        </option>
+
+                        {% for year in available_years %}
+
+                        <option
+                            value="{{ year }}"
+                            {% if selected_year == year|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ year }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- MANUAL YEAR -->
+                <div class="filter-field">
+
+                    <label for="custom_year">
+                        Or Enter Year
+                    </label>
+
+                    <input
+                        type="number"
+                        id="custom_year"
+                        name="custom_year"
+                        value="{{ custom_year or '' }}"
+                        placeholder="e.g. 2024"
+                        min="1900"
+                        max="2100"
+                    >
+
+                    <small>
+                        Enter any year manually.
+                    </small>
+
+                </div>
+
+
+                <!-- MONTH -->
+                <div class="filter-field">
+
+                    <label for="month">
+                        Month
+                    </label>
+
+                    <select
+                        id="month"
+                        name="month"
+                    >
+
+                        <option value="">
+                            All Months
+                        </option>
+
+                        <option value="1"
+                            {% if selected_month == "1" %}selected{% endif %}>
+                            January
+                        </option>
+
+                        <option value="2"
+                            {% if selected_month == "2" %}selected{% endif %}>
+                            February
+                        </option>
+
+                        <option value="3"
+                            {% if selected_month == "3" %}selected{% endif %}>
+                            March
+                        </option>
+
+                        <option value="4"
+                            {% if selected_month == "4" %}selected{% endif %}>
+                            April
+                        </option>
+
+                        <option value="5"
+                            {% if selected_month == "5" %}selected{% endif %}>
+                            May
+                        </option>
+
+                        <option value="6"
+                            {% if selected_month == "6" %}selected{% endif %}>
+                            June
+                        </option>
+
+                        <option value="7"
+                            {% if selected_month == "7" %}selected{% endif %}>
+                            July
+                        </option>
+
+                        <option value="8"
+                            {% if selected_month == "8" %}selected{% endif %}>
+                            August
+                        </option>
+
+                        <option value="9"
+                            {% if selected_month == "9" %}selected{% endif %}>
+                            September
+                        </option>
+
+                        <option value="10"
+                            {% if selected_month == "10" %}selected{% endif %}>
+                            October
+                        </option>
+
+                        <option value="11"
+                            {% if selected_month == "11" %}selected{% endif %}>
+                            November
+                        </option>
+
+                        <option value="12"
+                            {% if selected_month == "12" %}selected{% endif %}>
+                            December
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="dashboard-button"
+                >
+                    Apply Report Filter
+                </button>
+
+                <a
+                    href="{{ url_for('reports.index') }}"
+                    class="dashboard-button secondary"
+                >
+                    Reset
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- CURRENT PERIOD -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>
+                    Report Period
+                </h3>
+
+                <span>
+                    Currently displaying financial data for
+                </span>
+
+            </div>
+
+            <strong>
+
+                {% if selected_year and selected_month %}
+
+                    {{ selected_year }} /
+                    {{ selected_month }}
+
+                {% elif selected_year %}
+
+                    Year {{ selected_year }}
+
+                {% elif selected_month %}
+
+                    Month {{ selected_month }}
+
+                {% else %}
+
+                    All Transactions
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- METRIC CARDS -->
+    <div class="metrics-grid">
+
+
+        <!-- INCOME -->
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-top">
+
+                <div class="dashboard-card-title">
+                    Total Income
+                </div>
+
+                <div class="dashboard-card-icon">
+                    ↑
+                </div>
+
+            </div>
+
+            <div class="dashboard-card-value">
+
+                TZS
+                {{ "{:,.2f}".format(total_income or 0) }}
+
+            </div>
+
+            <div class="dashboard-card-info">
+
+                {{ income_count or 0 }}
+                income transaction(s)
+
+            </div>
+
+        </div>
+
+
+        <!-- EXPENSE -->
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-top">
+
+                <div class="dashboard-card-title">
+                    Total Expenses
+                </div>
+
+                <div class="dashboard-card-icon">
+                    ↓
+                </div>
+
+            </div>
+
+            <div class="dashboard-card-value">
+
+                TZS
+                {{ "{:,.2f}".format(total_expense or 0) }}
+
+            </div>
+
+            <div class="dashboard-card-info">
+
+                {{ expense_count or 0 }}
+                expense transaction(s)
+
+            </div>
+
+        </div>
+
+
+        <!-- NET -->
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-top">
+
+                <div class="dashboard-card-title">
+                    Net Balance
+                </div>
+
+                <div class="dashboard-card-icon">
+                    =
+                </div>
+
+            </div>
+
+            <div class="dashboard-card-value">
+
+                TZS
+                {{ "{:,.2f}".format(net_balance or 0) }}
+
+            </div>
+
+            <div class="dashboard-card-info">
+                Income minus expenses
+            </div>
+
+        </div>
+
+
+        <!-- TRANSACTIONS -->
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-top">
+
+                <div class="dashboard-card-title">
+                    Transactions
+                </div>
+
+                <div class="dashboard-card-icon">
+                    #
+                </div>
+
+            </div>
+
+            <div class="dashboard-card-value">
+                {{ transaction_count or 0 }}
+            </div>
+
+            <div class="dashboard-card-info">
+                Recorded transactions
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CATEGORY SUMMARY -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>
+                    Category Summary
+                </h3>
+
+                <span>
+                    Financial activity by category
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if category_summary %}
+
+        <div class="dashboard-table-wrapper">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Category</th>
+                        <th>Income</th>
+                        <th>Expense</th>
+                        <th>Net</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in category_summary %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.category or item.name or "Uncategorized" }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(item.income or 0) }}
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(item.expense or 0) }}
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(
+                                (item.net if item.net is defined else
+                                ((item.income or 0) - (item.expense or 0)))
+                            ) }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h4>
+                No category data
+            </h4>
+
+            <p>
+                No financial activity is available for the selected period.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- MONTHLY PERFORMANCE -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>
+                    Monthly Performance
+                </h3>
+
+                <span>
+                    Income and expenses by month
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if monthly_performance %}
+
+        <div class="dashboard-table-wrapper">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Month</th>
+                        <th>Income</th>
+                        <th>Expense</th>
+                        <th>Net</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in monthly_performance %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.month_name or item.month or "Unknown" }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(item.income or 0) }}
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(item.expense or 0) }}
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(
+                                (item.net if item.net is defined else
+                                ((item.income or 0) - (item.expense or 0)))
+                            ) }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h4>
+                No monthly data
+            </h4>
+
+            <p>
+                No monthly financial activity is available.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ACCOUNT BALANCES -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>
+                    Account Balances
+                </h3>
+
+                <span>
+                    Current balance of active financial accounts
+                </span>
+
+            </div>
+
+            <a
+                href="{{ url_for('accounts.index') }}"
+                class="dashboard-button"
+            >
+                View Accounts
+            </a>
+
+        </div>
+
+
+        {% if accounts %}
+
+        <div class="dashboard-table-wrapper">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Account</th>
+                        <th>Type</th>
+                        <th>Account Number</th>
+                        <th>Current Balance</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for account in accounts %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ account.name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ account.account_type }}
+                        </td>
+
+                        <td>
+                            {{ account.account_number or "—" }}
+                        </td>
+
+                        <td>
+                            TZS
+                            {{ "{:,.2f}".format(account.current_balance or 0) }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="panel-footer">
+
+            <strong>
+                Total Account Balance
+            </strong>
+
+            <strong>
+                TZS
+                {{ "{:,.2f}".format(total_account_balance or 0) }}
+            </strong>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h4>
+                No active accounts
+            </h4>
+
+            <p>
+                Add an account to begin tracking balances.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- TRANSACTIONS -->
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>
+                    Transactions
+                </h3>
+
+                <span>
+                    Transactions for the selected report period
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if transactions %}
+
+        <div class="dashboard-table-wrapper">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for transaction in transactions %}
+
+                    <tr>
+
+                        <td>
+                            {{ transaction.transaction_date.strftime("%d %b %Y") }}
+                        </td>
+
+                        <td>
+
+                            {% if transaction.transaction_type == "income" %}
+
+                                <strong class="income-text">
+                                    Income
+                                </strong>
+
+                            {% else %}
+
+                                <strong class="expense-text">
+                                    Expense
+                                </strong>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ transaction.description }}
+                        </td>
+
+                        <td>
+                            {{ transaction.category }}
+                        </td>
+
+                        <td>
+
+                            {% if transaction.transaction_type == "income" %}
+
+                                <span class="income-text">
+
+                                    + TZS
+                                    {{ "{:,.2f}".format(transaction.amount or 0) }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="expense-text">
+
+                                    - TZS
+                                    {{ "{:,.2f}".format(transaction.amount or 0) }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h4>
+                No transactions found
+            </h4>
+
+            <p>
+                There are no transactions for the selected period.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

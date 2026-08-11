@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}
+Financial Accounts - QF Financial Intelligence Platform
+{% endblock %}
+
+{% block page_title %}
+Financial Accounts
+{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+
+    <div>
+        <h2 style="margin-bottom: 6px;">
+            Financial Accounts
+        </h2>
+
+        <p style="color: #64748b;">
+            Manage your cash, bank and mobile money accounts.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('accounts.add') }}"
+        style="
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        "
+    >
+        + Add Account
+    </a>
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div style="
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+">
+
+
+    <!-- CASH -->
+
+    <div style="
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    ">
+
+        <div style="
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        ">
+            Cash
+        </div>
+
+        <div style="
+            font-size: 24px;
+            font-weight: 700;
+        ">
+            TZS {{ "{:,.2f}".format(cash_total or 0) }}
+        </div>
+
+    </div>
+
+
+    <!-- BANK -->
+
+    <div style="
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    ">
+
+        <div style="
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        ">
+            Bank Accounts
+        </div>
+
+        <div style="
+            font-size: 24px;
+            font-weight: 700;
+        ">
+            TZS {{ "{:,.2f}".format(bank_total or 0) }}
+        </div>
+
+    </div>
+
+
+    <!-- MOBILE MONEY -->
+
+    <div style="
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    ">
+
+        <div style="
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        ">
+            Mobile Money
+        </div>
+
+        <div style="
+            font-size: 24px;
+            font-weight: 700;
+        ">
+            TZS {{ "{:,.2f}".format(mobile_money_total or 0) }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACCOUNTS -->
+
+<div style="
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    overflow: hidden;
+">
+
+
+    <div style="
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+    ">
+
+        <h3 style="font-size: 17px;">
+            Your Accounts
+        </h3>
+
+    </div>
+
+
+    {% if accounts %}
+
+    <div style="overflow-x: auto;">
+
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+        ">
+
+            <thead>
+
+                <tr style="
+                    background: #f8fafc;
+                    text-align: left;
+                ">
+
+                    <th style="padding: 14px 20px;">
+                        Account
+                    </th>
+
+                    <th style="padding: 14px 20px;">
+                        Type
+                    </th>
+
+                    <th style="padding: 14px 20px;">
+                        Account Number
+                    </th>
+
+                    <th style="padding: 14px 20px;">
+                        Opening Balance
+                    </th>
+
+                    <th style="padding: 14px 20px;">
+                        Current Balance
+                    </th>
+
+                    <th style="padding: 14px 20px;">
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for account in accounts %}
+
+                <tr style="
+                    border-top: 1px solid #e5e7eb;
+                ">
+
+                    <td style="padding: 16px 20px;">
+
+                        <strong>
+                            {{ account.name }}
+                        </strong>
+
+                        {% if account.description %}
+
+                        <div style="
+                            font-size: 12px;
+                            color: #64748b;
+                            margin-top: 4px;
+                        ">
+                            {{ account.description }}
+                        </div>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td style="padding: 16px 20px;">
+
+                        {% if account.account_type == "bank" %}
+
+                            Bank Account
+
+                        {% elif account.account_type == "mobile_money" %}
+
+                            Mobile Money
+
+                        {% elif account.account_type == "cash" %}
+
+                            Cash
+
+                        {% else %}
+
+                            Other
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td style="padding: 16px 20px;">
+
+                        {{ account.account_number or "—" }}
+
+                    </td>
+
+
+                    <td style="padding: 16px 20px;">
+
+                        TZS {{ "{:,.2f}".format(account.opening_balance or 0) }}
+
+                    </td>
+
+
+                    <td style="
+                        padding: 16px 20px;
+                        font-weight: 700;
+                    ">
+
+                        TZS {{ "{:,.2f}".format(account.current_balance or 0) }}
+
+                    </td>
+
+
+                    <td style="padding: 16px 20px;">
+
+                        {% if account.status == "active" %}
+
+                        <span style="
+                            background: #dcfce7;
+                            color: #166534;
+                            padding: 5px 10px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                        ">
+                            Active
+                        </span>
+
+                        {% else %}
+
+                        <span style="
+                            background: #fee2e2;
+                            color: #991b1b;
+                            padding: 5px 10px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                        ">
+                            Inactive
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+    <div style="
+        padding: 60px 20px;
+        text-align: center;
+        color: #64748b;
+    ">
+
+        <div style="
+            font-size: 40px;
+            margin-bottom: 12px;
+        ">
+            💳
+        </div>
+
+        <h3 style="
+            color: #1f2937;
+            margin-bottom: 8px;
+        ">
+            No accounts found
+        </h3>
+
+        <p style="margin-bottom: 20px;">
+            Create your first financial account to start managing balances.
+        </p>
+
+        <a
+            href="{{ url_for('accounts.add') }}"
+            style="
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            "
+        >
+            + Create Account
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
